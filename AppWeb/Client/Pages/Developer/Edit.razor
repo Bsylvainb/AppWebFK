@@ -1,0 +1,102 @@
+﻿@page "/developer/edit/{developerId:int}"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+@inject ISidepanelService Sidepanel
+
+<FormEdit ButtonText="Update" dev="dev" OnValidSubmit="@EditDeveloper" />
+ 
+<hr />
+<RadzenLabel>Actions</RadzenLabel>
+ <SidepanelComponent @ref="createSidepanel" Title="Create" SubTitle="Actions">
+    <FormCreateSidePanel ButtonAction="Create" act="@act" OnValidSubmit="@CreateActionList" />
+</SidepanelComponent>
+
+<RadzenButton Text="Create Action" Icon="report" ButtonStyle="ButtonStyle.Light" Click=@OpenCreateForm />
+<RadzenButton Variant="Variant.Outlined" Click=@Close Text="Light" ButtonStyle="ButtonStyle.Light" />
+<Codeblock Code="@codeblock1" />
+<hr />
+
+ <RadzenDataGrid @ref="gridaction"  AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@actionitems" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+                SelectionMode="DataGridSelectionMode.Single" >
+
+               <Columns>
+                   <RadzenDataGridColumn TItem="ActionItem" Property="ActionId" Title="ActionId" Width="80px"/> 
+                   <RadzenDataGridColumn TItem="ActionItem" Property="Tilte" Title="Title" Width="80px"/>
+                   <RadzenDataGridColumn TItem="ActionItem" Property="DescriptionA" Title="Description" Width="80px"/>
+                   <RadzenDataGridColumn TItem="ActionItem" Property="State" Title="State" Width="80px"/>
+                   <RadzenDataGridColumn TItem="ActionItem" Property="ActionId" Context="actionitem" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="50px">
+                       <Template Context="actionitems">
+                           <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small"  @onclick:stopPropagation="true" />
+                       </Template>
+                   </RadzenDataGridColumn>
+               </Columns>
+ </RadzenDataGrid>    
+
+@code {
+   // [Parameter] public ActionItem? act { get; set; }
+    [Parameter] public int developerId { get; set; }
+    [Parameter] public int ActionId { get; set; } 
+
+    ActionItem[]? actionitems { get; set; }
+
+    //ActionItem action = new ActionItem();
+
+    Developer dev = new Developer();
+    ActionItem act = new ActionItem();
+
+    RadzenDataGrid<ActionItem>? gridaction;
+       
+   
+    protected async override Task OnParametersSetAsync()
+    {
+        dev = await http.GetFromJsonAsync<Developer>($"api/developer/{developerId}");
+        actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
+    }
+
+    async Task EditDeveloper()
+    {
+        await http.PutAsJsonAsync("api/developer", dev);
+        await http.GetAsync($"api/developer/GenearteEcoById/{developerId}");     
+        await js.InvokeVoidAsync("alert", $"Updated Successfully!");
+        uriHelper.NavigateTo("developer");        
+    }  
+
+   //   protected override async Task OnInitializedAsync()
+  //  {
+  //      actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
+
+  //  }      
+
+    async Task CreateActionList()
+    {        
+      // await http.PostAsJsonAsync($"api/developer/edit/{developerId}/developeractions", act);
+       await http.PostAsJsonAsync($"api/developer", act);      
+     uriHelper.NavigateTo($"/developer/edit/{developerId}");
+    }
+
+    private SidepanelComponent? editSidepanel;
+    private SidepanelComponent? createSidepanel;
+    private ActionItem? actions;
+    private string codeblock1 => "<SidepanelComponent @ref=\"createSidepanel\" Title=\"CreateSidePanel\" SubTitle=\"Starship\">\n    <Create/>\n</SidepanelComponent>";
+       
+    private void OpenCreateForm() { createSidepanel.Open(); }
+
+    private void OpenEditForm() { editSidepanel.Open();}
+
+    private void Close() { createSidepanel.Close(); }
+
+    private void SoftClose() { editSidepanel.SoftClose(); } 
+      
+     
+
+
+    void CellRender(DataGridCellRenderEventArgs<ActionItem> args)
+    {
+    }
+    void RowRender(RowRenderEventArgs<ActionItem> args)
+    {
+    }
+  
+}

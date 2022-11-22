@@ -1,0 +1,26 @@
+﻿
+@inject HttpClient http
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+@inject ISidepanelService Sidepanel
+
+@*<FormCreateSidePanel ButtonAction="Create Action" act="@act" OnValidSubmit="@CreateActionsList"/>*@
+
+@code {
+
+  //   [Parameter] public ActionsList? act { get; set; }
+   //  [Parameter] public string ButtonAction { get; set; } = "Save";
+   //  [Parameter] public int DeveloperId { get; set; }
+
+   // protected async override Task OnParametersSetAsync()
+  //  {
+  //      act = await http.GetFromJsonAsync<ActionsList>($"api/actionslist/{DeveloperId}");
+
+  //  }
+
+  //  async Task CreateActionsList()
+  //  {
+  //        await http.PostAsJsonAsync("api/actionslist", act);
+  //        uriHelper.NavigateTo("actionslist");
+  //  }
+}

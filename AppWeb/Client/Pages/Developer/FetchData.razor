@@ -1,0 +1,448 @@
+﻿@page "/developer"
+
+@inject HttpClient http
+@inject HttpClient client
+@inject NavigationManager uriHelper
+@inject NavigationManager NavigationManager
+@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
+
+<div class="row">
+    <div class="col-xl">
+        <div class="row">
+            <div class="col-xl">
+                <p>
+                    <span style="float:left;">Suivi des ECR</span>
+                </p>
+            </div>
+            <div class="col-xl0">
+                <p>
+                    <span class="pull-right;" style="float:right;"><RadzenDatePicker Disabled="true" @bind-Value=@value /></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+     <div class="col-xl">
+        <div class="form-group">
+                    <a class="btn btn-primary" href="developer/create">Add ECR</a>
+        </div>            
+     </div>
+ </div>
+ <div class="row">
+     <div class="col-xl0">
+ @*<RadzenCard Class="my-4" style="display: flex; align-items: center; gap: 0.5rem"> </RadzenCard>*@
+        <div class="col-xl">
+             <p>
+             @*<div style="white-space:nowrap; margin-right: 16px">Density:</div>*@
+               <RadzenSelectBar @bind-Value="@Density" TextProperty="Text" ValueProperty="Value" 
+                Data="@(Enum.GetValues(typeof(Density)).Cast<Density>().Select(t => new { Text = $"{t}", Value = t }))" Size="ButtonSize.Small" />
+                 
+              </p>
+        </div>    
+     </div>
+</div>
+<hr />
+
+
+@if (developers == null)
+{
+    <text>Loading...</text>
+}
+else if (developers.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <RadzenDataGrid @ref="grid" AllowFiltering="true" Density="@Density" AllowPaging="true" PageSize="15" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@developers" TItem="Developer" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+                    SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedDeveloper >
+        <Template Context="developers">
+
+            @if (developers.Statut != null)
+            {
+                <div class="row my-4">
+                    <div class="col-sm-2">
+                        <h5><span class="small d-block text-muted">Statut</span></h5>
+                        @if (developers.Statut == "Open")
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" >@developers.Statut</RadzenBadge>
+                        }
+                        else if (developers.Statut == "Close")
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" >@developers.Statut</RadzenBadge>
+                        }
+
+                        <h5><span class="small d-block text-muted">Created on</span></h5>
+                            @developers.DateCrea.ToString("dd MMMM yyyy")
+                        <span class="small d-block text-muted">Priorité</span>
+
+                        @if(developers.CodePrio == "1:CA" || developers.CodePrio == "2:HA")
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" >@developers.CodePrio</RadzenBadge>
+                        }
+                        else if(developers.CodePrio == "3:.." || developers.CodePrio == "4:..")
+                        {
+                             <RadzenBadge BadgeStyle="BadgeStyle.Warning" >@developers.CodePrio</RadzenBadge>
+                        }
+                        else if(developers.CodePrio == null)
+                        {
+                          <span class="badge badge-succes">@developers.CodePrio</span>
+                        }
+                    </div>
+                    <div class="col-sm-8">
+                        <h3 class="small text-muted">Description</h3>
+                        <div>                            
+                            <span>@((MarkupString)developers.Description)</span>     
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </Template>
+        <Columns>
+            <RadzenDataGridColumn TItem="Developer" Property="ECR" Title="ECR" Width="80px">
+             
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Developer" FormatString="{0:dd MMM yyyy}" Property="DateCrea" Title=" Date Creation" />
+            <RadzenDataGridColumn TItem="Developer" Property="Atelier" Title="Atelier" />
+            <RadzenDataGridColumn TItem="Developer" Property="Nom" Title="Nom" />
+            <RadzenDataGridColumn TItem="Developer" Property="CodePrio" Title="Code Priorité" />
+            <RadzenDataGridColumn TItem="Developer" Property="Statut" Title="Statut" >
+                <Template Context="developers">
+
+                    @if (developers.Statut == "Open")
+                    {
+                        <div style="display: flex; align-items: center; color: #28a745">
+                            <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"></path></svg>
+                            <span style="margin-left: 4px">open</span>
+                        </div>
+                      
+                    }
+                    else if (developers.Statut == "Close")
+                    {
+                        <div style="display: flex; align-items: center; color: #cb2431">
+                            <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 0110.65-5.003.75.75 0 00.959-1.153 8 8 0 102.592 8.33.75.75 0 10-1.444-.407A6.5 6.5 0 011.5 8zM8 12a1 1 0 100-2 1 1 0 000 2zm0-8a.75.75 0 01.75.75v3.5a.75.75 0 11-1.5 0v-3.5A.75.75 0 018 4zm4.78 4.28l3-3a.75.75 0 00-1.06-1.06l-2.47 2.47-.97-.97a.749.749 0 10-1.06 1.06l1.5 1.5a.75.75 0 001.06 0z"></path></svg>
+                            <span style="margin-left: 4px">closed</span>
+                        </div>
+                    }
+                 
+
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Developer" Property="DTbem" Title="BEM"  Width="80px">
+                <Template Context="developers">                   
+                        <div style="display: flex; align-items: center; color: #cb2431">
+                            @if (developers.DTbem=="NP")
+                             {
+                                <svg height="12" width="12">
+                                    <circle cx="6" cy="6" r="4" fill="red"/>
+                                </svg>                          
+                            }
+                             else if (developers.DTbem=="SP")
+                             {
+                                  <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="orange"/>
+                                    </svg>
+                             } 
+                             else if (developers.DTbem == "For Validation")
+                             {
+                                 <svg height="12" width="12">
+                                    <circle cx="6" cy="6" r="4" fill="gray"/>
+                                 </svg>
+                             }
+                            else if (developers.DTbem=="Validated" || developers.DTbem=="NC")
+                            {
+                                <svg height="12" width="12">
+                                    <circle cx="6" cy="6" r="4" fill="#42ff8a"/>
+                                </svg>
+                            
+                            }
+                        </div>
+                       @*<RadzenText style="width: 5px; height: 5px; border-radius: 10px; margin-right: 2px;">@developers.DTbem</RadzenText>*@
+                         
+                </Template>
+            </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="DTbee" Title="BEE"  Width="80px">
+                      <Template Context="developers">
+                          <div style="display: flex; align-items: center; color: #cb2431">
+                                @if (developers.DTbem == "Validated" || developers.DTbem=="NC")
+                                {
+
+                                    @if (developers.DTbee == "NP")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="red"/>
+                                        </svg>
+                                    }                                     
+                                    else if (developers.DTbee == "SP")
+                                    {
+                                        <svg height="12" width="12" >
+                                            <circle cx="6" cy="6" r="4" fill="orange"/>
+                                        </svg>
+                                    }
+                                    else if (developers.DTbee == "For Validation")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="gray"/>
+                                        </svg>
+                                    }
+                                    else if (developers.DTbee == "Validated" || developers.DTbee == "NC")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="#42ff8a"/>
+                                        </svg>
+                                    }
+                                }
+                          </div> 
+                      </Template>
+
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Developer" Property="DTrd" Title="DT"  Width="80px" >
+                    <Template Context="developers">
+                        <div style="display: flex; align-items: center; color: #cb2431">
+                            @if (developers.DTbem == "Validated" && developers.DTbee=="Validated" || developers.DTbem=="NC" || developers.DTbee=="NC")
+                            {
+
+                                @if (developers.DTrd == "NP")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="red"/>
+                                    </svg>
+                                }
+                                else if (developers.DTrd == "SP")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="orange"/>
+                                    </svg>
+                                }
+                                else if (developers.DTrd == "For Validation")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="gray"/>
+                                    </svg>
+                                }
+                                else if (developers.DTrd == "Validated" || developers.DTrd == "NC")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="#42ff8a"/>
+                                    </svg>
+                                }
+                            }
+                        </div>
+                        
+                    </Template>
+                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="DImi" Title="MI"  Width="80px" >
+                     <Template Context="developers">
+                        <div style="display: flex; align-items: center; color: #cb2431">
+                            @if (developers.DTbem == "Validated" && developers.DTbee=="Validated" && developers.DTrd=="Validated" || developers.DTbem=="NC" || developers.DTbee =="NC" || developers.DTrd=="NC")
+                            {
+
+                                @if (developers.DImi == "NP")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="red"/>
+                                    </svg>
+                                }
+                                else if (developers.DImi == "SP")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="orange"/>
+                                    </svg>
+                                }
+                                else if (developers.DImi == "For Validation")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="gray"/>
+                                    </svg>
+                                }
+                                else if (developers.DImi == "Validated" || developers.DImi == "NC")
+                                {
+                                    <svg height="12" width="12">
+                                        <circle cx="6" cy="6" r="4" fill="#42ff8a"/>
+                                    </svg>
+                                }
+                            }
+                        </div>
+                        
+                    </Template>
+                 </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="Developer" Property="BlSAQ" Title="SQ" Width="80px" >
+                    <Template Context="developers">
+                            <div style="display: flex; align-items: center; color: #cb2431">
+                                @if (developers.DTbem == "Validated" && developers.DTbee=="Validated" && developers.DTrd=="Validated" && developers.DImi=="Validated" || developers.DTbem=="NC" || developers.DTbee =="NC" || developers.DTrd=="NC" || developers.DImi=="NC")
+                                {
+
+                                    @if (developers.BlSAQ == "NP")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="red"/>
+                                        </svg>
+                                    }
+                                    else if (developers.BlSAQ == "SP")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="orange"/>
+                                        </svg>
+                                    }
+                                    else if (developers.BlSAQ == "For Validation")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="gray"/>
+                                        </svg>
+                                    }
+                                    else if (developers.BlSAQ == "Validated" || developers.BlSAQ=="NC")
+                                    {
+                                        <svg height="12" width="12">
+                                            <circle cx="6" cy="6" r="4" fill="#42ff8a"/>
+                                        </svg>
+                                    }
+                                }
+                            </div>
+                        
+                    </Template>
+                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="ECO" Title="ECO" >
+                    <Template Context="developers">
+                        @*<RadzenTextBox @bind-Value =@developers.ECO MaxLength="5"/>*@
+                        <span style='color:black'> @developers.ECO</span>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="RAF" Title="RAF">
+                    <Template Context="developers">
+                        @if (developers.RAF != 0 && developers.Statut != "Close")
+                        {
+                            <span style='color:black'> @developers.RAF</span>
+                        }
+                        else if (developers.RAF != 0 && developers.Statut == "Close")
+                        {
+                            <span style='color:black'> @developers.RAF</span>
+                        }
+                        else if (developers.RAF == 0 && developers.Statut == "Open")
+                        {
+                            <span style='color:black'> @developers.RAF</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="DeveloperId" Context="developers" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="50px">
+                    <Template Context="developers">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Click="@(args => EditDeveloper(developers.DeveloperId))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="DeveloperId" Context="developers" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="50px">
+                    <Template Context="developers">
+                        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="W" Size="ButtonSize.Small" Click="@(args => WorkDeveloper(developers.DeveloperId))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Developer" Property="DeveloperId" Context="developers" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="50px">
+                    <Template Context="developers">
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"  Click="@(args => Delete(developers.DeveloperId))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                    </Template>
+                </RadzenDataGridColumn> 
+        </Columns>
+        
+    </RadzenDataGrid>
+   @*<input @bind="newItemName" placeholder="New Todo Item" />
+    <button @onclick="AddYear">Add</button>*@
+}
+
+@code {
+
+
+    RadzenDataGrid<Developer>? grid;
+
+    Developer dev = new Developer();
+
+    Developer[]? developers { get; set; }
+
+    DateTime? value = DateTime.Now;
+
+    IList<Developer>? selectedDeveloper;   
+
+    Density Density = Density.Compact;
+   
+    void ClearSelection()
+    {
+        selectedDeveloper = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        developers = await client.GetFromJsonAsync<Developer[]>("api/developer");
+
+    }
+
+    async Task Delete(int devId)
+    {
+        var dev = developers.First(x => x.DeveloperId == devId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {dev.ECR} Record?"))
+        {
+            await client.DeleteAsync($"api/developer/{devId}");
+            await OnInitializedAsync();
+        }
+    }
+    async Task EditDeveloper(int EditId)
+    {
+        await js.InvokeVoidAsync("alert", $"Be careful, you are modifying an ECR!");
+        NavigationManager.NavigateTo($"/developer/edit/{EditId}");
+    }
+
+    async Task WorkDeveloper(int WorkId)
+    {
+        await js.InvokeVoidAsync("alert", $"You start the workflow!");
+        NavigationManager.NavigateTo($"/developer/work/{WorkId}");
+    }
+
+    void CellRender(DataGridCellRenderEventArgs<Developer> args)
+    {    
+        if (args.Column.Property == "RAF")
+        {
+
+           if (args.Data.Calcul < 0 && args.Data.Statut != "Close")
+          {
+               args.Data.RAF = (int)Math.Floor((DateTime.Today - args.Data.DateSoldePr.Value).TotalDays);
+                args.Attributes.Add("style", $"background-color: #42ff8a");
+           }
+            if (args.Data.Calcul > 0 && args.Data.Statut != "Close")
+           {
+              args.Data.RAF = (int)Math.Floor((DateTime.Today - args.Data.DateSoldePr.Value).TotalDays);
+              args.Attributes.Add("style", $"background-color: #fe434a");
+           }
+            if (args.Data.Statut == "Close")
+            {
+                args.Data.RAF = 0;
+            }
+        }
+
+        if (args.Column.Property == "ECO")
+        {
+            if (args.Data.ECO == null)
+            {
+                args.Data.ECO = "---";
+            }
+            else if(args.Data.ECO != null)
+            {
+                args.Data.ECO =args.Data.ECO;
+            };
+        }   
+
+    }
+
+    void RowRender(RowRenderEventArgs<Developer> args)
+    {
+        args.Expandable = args.Data.ECR != "null";
+    }
+       
+
+}
+
+

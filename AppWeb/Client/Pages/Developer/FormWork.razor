@@ -1,0 +1,137 @@
+﻿
+
+<EditForm Model="@dev" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-xl">
+            <div class="row">
+                <div class="col-xl">
+                    <RadzenCard Style="width:500px; margin-bottom: 20px; height:100px; background:white;">
+                        <h3 style="color:black ;">ECR : @dev.ECR</h3>
+                    </RadzenCard>
+                </div>
+                <div class="col-xl">
+                    <RadzenCard Style="width:500px; margin-bottom: 20px; height:100px; background:white;">
+                        <h3 style="color:black ;">ECO :  @dev.ECO</h3>
+                    </RadzenCard>
+                </div>
+                <div class="col-xl">
+                    <RadzenCard Style="width:500px; margin-bottom: 20px; height:100px; background:white;">
+                        <h3 style="color:black ;">Code Priorité : @dev.CodePrio</h3>
+                    </RadzenCard>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl">
+            <div class="row">
+                <div class="col-xl">
+                    <RadzenCard Style="width:300px; margin-bottom: 10px; height:100px; background:#479cc8;">
+                        <h3 style="color:white ;">BEM</h3>
+                    </RadzenCard>
+                    
+                    <RadzenFieldset Text="Avancement" Style="margin-bottom: 10px">
+                        <div class="row my-4">
+                            <div class="col-sm-6">
+                                <RadzenLabel Text="Planification" />
+                                <InputSelect id="Statut" class="form-control" width="50%" @bind-Value=@dev.DTbem>
+                                    @foreach (var option in statutsPlan)
+                                    {
+                                        <option value="@option.PlanDTbemName">
+                                            @option.PlanDTbemId
+                                        </option>
+                                    }
+                                </InputSelect>
+                            </div>
+                       
+                            <div class="col-sm-6">
+                                @*<RadzenDatePicker style="width: 60%;" Name="Date" @bind-Value="@dev.DateSoldePr" />*@
+                            </div>
+                        </div>
+                    </RadzenFieldset>
+                </div>
+                <div class="col-xl">
+                    <RadzenCard Style="width:300px; margin-bottom: 10px; height:100px; background:#479cc8;">
+                        <h3 style="color:white ;">BEE</h3>
+                    </RadzenCard>
+                    <RadzenFieldset Text="Avancement" Style="margin-bottom: 30px">
+
+
+                    </RadzenFieldset>
+                </div>
+                <div class="col-xl">
+                    <RadzenCard Style="width:300px; margin-bottom: 10px; height:100px; background:#479cc8;">
+                        <h3 style="color:white ;">DT</h3>
+                    </RadzenCard>
+                    <RadzenFieldset Text="Avancement" Style="margin-bottom: 30px">
+
+
+                    </RadzenFieldset>
+                </div>
+                <div class="col-xl">
+                    <RadzenCard Style="width:300px; margin-bottom: 10px; height:100px; background:#479cc8;">
+                        <h3 style="color:white ;">DTI</h3>
+                    </RadzenCard>
+                    <RadzenFieldset Text="Avancement" Style="margin-bottom: 30px">
+
+
+                    </RadzenFieldset>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl">
+                    <RadzenCard Style="width:300px; margin-bottom: 10px; height:100px; background:#479cc8;">
+                        <h3 style="color:white ;">SQ</h3>
+                    </RadzenCard>
+                    <RadzenFieldset Text="Avancement" Style="margin-bottom: 30px">
+                        <RadzenLabel Text="Date Solde" />
+                        <RadzenDatePicker style="width: 100%;" Name="Date Solde" @bind-Value="@dev.DateSolde" />
+                        <ValidationMessage For="@(() => dev.DateSolde)" />
+                    </RadzenFieldset>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <br />
+    <hr>
+    <div>
+        <NavLink class="btn btn-secondary" href="/developer">Back</NavLink>
+        <button type="submit" class="btn btn-success">
+            @ButtonText
+        </button>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter] public Developer dev { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    public class PlanDTbem
+    {
+        public string PlanDTbemId { get; set; }
+        public string PlanDTbemName { get; set; }
+    }
+    List<PlanDTbem> statutsPlan = new List<PlanDTbem>()
+    {
+        new PlanDTbem() {PlanDTbemId="Select...",PlanDTbemName = " " },
+        new PlanDTbem() { PlanDTbemId = "NP", PlanDTbemName = "NP" },
+        new PlanDTbem() { PlanDTbemId = "NC", PlanDTbemName = "NC" },
+        new PlanDTbem() { PlanDTbemId = "SP", PlanDTbemName = "SP" },
+        new PlanDTbem() { PlanDTbemId = "Wait for validation", PlanDTbemName = "Attente validation" },
+        new PlanDTbem() { PlanDTbemId = "Validated", PlanDTbemName = "Validated" },
+
+    };
+
+
+
+
+
+}

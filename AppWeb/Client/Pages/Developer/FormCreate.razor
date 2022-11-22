@@ -1,0 +1,369 @@
+﻿
+
+<EditForm Model="@dev" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+ 
+     <div>
+        <NavLink class="btn btn-secondary" href="/developer">Back</NavLink>
+        <button type="submit" class="btn btn-success">@ButtonText</button>
+    </div>
+    <hr />
+     <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <RadzenFieldset Text="Creation ECR" style="width= 50%;">
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Nom Emetteur" />
+                            </div>
+                            <div class="col-md-6">
+                                <RadzenTextBox style="width: 100%;" Name="Nom" @bind-Value="@dev.Nom" />
+                                <ValidationMessage For="@(() => dev.Nom)" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row ">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Date  de Creation" />
+                            </div>
+                            <div class="col-md-6">                                   
+                                <RadzenDatePicker  TValue="DateTime" DateFormat="d" Disabled="true" Class="w-100" />
+                                <ValidationMessage For="@(() => dev.DateCrea)" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Atelier" />
+                            </div>
+                            <div class="col-md-6">
+                                <InputSelect id="Atelier" class="form-control" @bind-Value=@dev.Atelier>
+                                    @foreach (var option in ateliers)
+                                    {
+                                        <option value="@option.AtelierName">
+                                            @option.AtelierId
+                                        </option>
+                                    }
+                                </InputSelect>
+                            </div>
+
+                        </div>                
+                        <br />  <br /> 
+                        <br />
+                        <br />
+                        <br />
+                    </RadzenFieldset>
+                </div>
+                <div class="col-md-4">
+                    <RadzenFieldset Text="Part Number">
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="PN" />
+                            </div>
+                            <div class="col-md-6">
+                                <RadzenTextBox style="width: 100%;" Name="PN" @bind-Value="@dev.PNC" />
+                                <ValidationMessage For="@(() => dev.PNC)" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row ">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Designation :" />
+                            </div>
+                            <div class="col-md-6">
+                                <RadzenTextBox style="width: 100%;" Name="Designation" @bind-Value="@dev.DesignationC" />
+                                <ValidationMessage For="@(() => dev.DesignationC)" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Amdt           :" />
+                            </div>
+                            <div class="col-md-6">
+                                <RadzenTextBox style="width: 100%;" Name="Amdt" @bind-Value="@dev.AmdtC" />
+                                <ValidationMessage For="@(() => dev.AmdtC)" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Indice :" />
+                            </div>
+                            <div class="col-md-6">
+                                <RadzenTextBox style="width: 100%;" Name="Indice" @bind-Value="@dev.IndiceC" />
+                                <ValidationMessage For="@(() => dev.IndiceC)" />
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                    </RadzenFieldset>
+                    <br />
+
+                </div>
+                <div class="col-md-4">
+                    
+                        <RadzenFieldset Text="Product Number">
+                            <div class="row">
+                                <div class="col-md-6 align-items-center d-flex">
+                                    <RadzenLabel Text="PN" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadzenTextBox style="width: 100%;" Name="PN" @bind-Value="@dev.PNP" />
+                                    <ValidationMessage For="@(() => dev.PNP)" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row ">
+                                <div class="col-md-6 align-items-center d-flex">
+                                    <RadzenLabel Text="Produit :" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadzenTextBox style="width: 100%;" Name="Produit" @bind-Value="@dev.Produit" />
+                                    <ValidationMessage For="@(() => dev.Produit)" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6 align-items-center d-flex">
+                                    <RadzenLabel Text="Amdt           :" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadzenTextBox style="width: 100%;" Name="Amdt" @bind-Value="@dev.AmdtP" />
+                                    <ValidationMessage For="@(() => dev.AmdtP)" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6 align-items-center d-flex">
+                                    <RadzenLabel Text="Indice :" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadzenTextBox style="width: 100%;" Name="Indice" @bind-Value="@dev.IndiceP" />
+                                    <ValidationMessage For="@(() => dev.IndiceP)" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row ">
+                                <div class="col-md-6 align-items-center d-flex">
+                                    <RadzenLabel Text="Date GPAO :" />
+                                </div>
+                                <div class="col-md-6">
+                                    @*<RadzenDatePicker @bind-Value="@d" Name="Date GPAO" DateFormat="d" />*@
+                                    <RadzenDatePicker @bind-Value="@dev.DateP" TValue="DateTime?" DateRender=@DateRender DateFormat="d" Class="w-100" />
+                                    <ValidationMessage For="@(() => dev.DateP)" />
+                                </div> 
+                            </div>
+                        </RadzenFieldset>
+                    
+                </div>
+            </div>
+            <hr>
+       
+    
+            <div class="row">
+                <div class="col-xl">
+              
+                                <RadzenFieldset Text="Description,Analyse SQ et Priorisation">
+                                  <RadzenTabs RenderMode="TabRenderMode.Client" SelectedIndex=@selectedIndex >
+                                   @*<RadzenTabs  TabPosition="@tabPosition" Class="w-75 my-5 mx-auto" RenderMode="TabRenderMode.Client" >*@
+                                       @*<RadzenTabs TabPosition="@tabPosition" Class="w-75 my-5 mx-auto" RenderMode="TabRenderMode.Client" >*@
+                                        <Tabs>
+                                            <RadzenTabsItem Text="Description">
+                                                <div class="row">
+                                                    <div class="col-xl">
+                                                        <RadzenLabel Text="Description détaillée" /><br />
+                                                        <RadzenHtmlEditor @bind-Value=@dev.Description style="height: 200px; margin-bottom: 1rem;" UploadUrl="upload/image" />
+                                                        
+                                                    </div>
+                                                </div>
+                                            </RadzenTabsItem>
+                                            <RadzenTabsItem Text="Analyse Blocage">
+                                                  <div class="row">
+                                                        <div class="col-md-6">
+                                                            <RadzenLabel Text="Blocage PN Tête " />
+                                                            <InputSelect id="Blocage" class="form-control" widt="50%" @bind-Value=@dev.BlocT>
+                                                                @foreach (var option in blocagest)
+                                                                {
+                                                                    <option value="@option.BlocageTName">
+                                                                        @option.BlocageTId
+                                                                    </option>
+                                                                }
+                                                            </InputSelect>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <RadzenLabel Text="Blocage Article " />
+                                                            <InputSelect id="Blocage" class="form-control" widt="50%" @bind-Value=@dev.BlocM>
+                                                                @foreach (var option in blocagesm)
+                                                                {
+                                                                    <option value="@option.BlocageMName">
+                                                                        @option.BlocageMId
+                                                                    </option>
+                                                                }
+                                                            </InputSelect>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <RadzenLabel Text="FEE" />
+                                                            <InputSelect id="Blocage" class="form-control" width="50%" @bind-Value=@dev.FEE>
+                                                                @foreach (var option in fees)
+                                                                {
+                                                                    <option value="@option.FeeName">
+                                                                        @option.FeeId
+                                                                    </option>
+                                                                }
+                                                            </InputSelect>
+                                                        </div>
+                                                  </div>
+                                            </RadzenTabsItem>
+                                            <RadzenTabsItem Text="Priorisation ECR">
+                                                    <div class="row">
+                                                        <div class="col-md-4 align-items-center d-flex"> 
+                                                            <RadzenLabel Text="Code Priorité" />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <InputSelect id="Priorite" class="form-control" widt="50%" @bind-Value="@dev.CodePrio">
+                                                            @foreach (var option in prio)
+                                                            {
+                                                                <option value="@option.PrioName">
+                                                                    @option.PrioId
+                                                                </option>
+                                                            }
+                                                        </InputSelect>                                                  
+                                                            <ValidationMessage For="@(() => dev.CodePrio)" />
+                                                        </div>
+                                                        <hr/>
+                                                    </div>
+                                                        <div class="col-xm">
+                                                            <RadzenLabel Text="Date Solde Prévue" />
+                                                            <RadzenDatePicker @bind-Value="@dev.DateSoldePr" TValue="DateTime?" DateRender=@DateRender DateFormat="d" Class="w-100" />
+                                                            <ValidationMessage For="@(() => dev.DateSoldePr)" />
+                                                        </div>
+                                                        <div class="col-xm">
+                                                            <RadzenLabel Text="Dernière Date de Suivi" />
+                                                            <RadzenDatePicker @bind-Value="@dev.DateSuivi" TValue="DateTime?" DateRender=@DateRender DateFormat="d" Class="w-100" />
+                                                            <ValidationMessage For="@(() => dev.DateSuivi)" />
+                                                        </div>
+                                            
+                                                    <br />
+                                                    <div class="row">
+                                                        <div class="col-xl">
+                                                            <RadzenLabel Text="Commentaires" /><br />                                                            
+                                                            <RadzenHtmlEditor @bind-Value=@dev.CommentairePrio style="height: 200px; margin-bottom: 1rem;" UploadUrl="upload/image" />
+                                                        </div>
+                                            
+                                                    </div>
+                                            </RadzenTabsItem>
+                                        </Tabs>
+                                   </RadzenTabs>                          
+                               </RadzenFieldset>                   
+                </div>
+            </div>
+            <br />
+            <hr>
+    </div>
+</EditForm>
+
+
+@code {
+
+    [Parameter] public Developer dev { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    bool popup;
+
+  //  Developer[]? developers { get; set; }
+   
+    int selectedIndex = 0;
+
+    DateTime? value = DateTime.Now;
+   
+    void DateRender(DateRenderEventArgs args)
+    {
+        args.Disabled = args.Disabled;
+               
+    }
+
+
+    public class AtelierList
+    {
+        public string AtelierId { get; set; }
+        public string AtelierName { get; set; }
+    }
+
+    List<AtelierList> ateliers = new List<AtelierList>()
+    {
+        new AtelierList() {AtelierId="Select...",AtelierName = " " },
+        new AtelierList() { AtelierId = "ECL", AtelierName = "ECL" },
+        new AtelierList() { AtelierId = "IHM", AtelierName = "IHM" }
+    };
+
+    public class StatutList
+    {
+        public string StatutId { get; set; }
+        public string StatutName { get; set; }
+    }
+    List<StatutList> statuts = new List<StatutList>()
+    {
+        new StatutList() {StatutId="Select...",StatutName = " " },
+        new StatutList() { StatutId = "To be reviewed", StatutName = "To be reviewed" },
+        new StatutList() { StatutId = "Open", StatutName = "Open" },
+        new StatutList() { StatutId = "Closed", StatutName = "Closed" },
+
+    };
+
+    public class BlocageTList
+    {
+        public string BlocageTId { get; set; }
+        public string BlocageTName { get; set; }
+    }
+
+    List<BlocageTList> blocagest = new List<BlocageTList>()
+    {
+        new BlocageTList() { BlocageTId = "Select...", BlocageTName = " " },
+        new BlocageTList() { BlocageTId = "0", BlocageTName = "0" },
+        new BlocageTList() { BlocageTId = "1", BlocageTName = "1" }
+    };
+
+    public class BlocageMList
+    {
+        public string BlocageMId { get; set; }
+        public string BlocageMName { get; set; }
+    }
+
+    List<BlocageMList> blocagesm = new List<BlocageMList>()
+    {
+        new BlocageMList() { BlocageMId = "Select...", BlocageMName = " " },
+        new BlocageMList() { BlocageMId = "0", BlocageMName = "0" },
+        new BlocageMList() { BlocageMId = "1", BlocageMName = "1" }
+    };
+
+    public class FeeList
+    {
+        public string FeeId { get; set; }
+        public string FeeName { get; set; }
+    }
+
+    List<FeeList> fees = new List<FeeList>()
+    {
+        new FeeList() {FeeId="Select...",FeeName = " " },
+        new FeeList() { FeeId = "0", FeeName = "0" },
+        new FeeList() { FeeId = "1", FeeName = "1" },
+    };   
+
+    public class PrioList
+    {
+        public string PrioId { get; set; }
+        public string PrioName { get; set; }       
+    }    
+
+    List<PrioList> prio = new List<PrioList>()
+    {
+        new PrioList() {PrioId="Select...",PrioName = null },
+        new PrioList() { PrioId = "1:CA", PrioName = "1:CA" },
+        new PrioList() { PrioId = "2:HA", PrioName = "2:HA" },
+        new PrioList() { PrioId = "3:..", PrioName = "3:.." },
+        new PrioList() { PrioId = "4:..", PrioName = "4:.." }
+    };
+
+ }

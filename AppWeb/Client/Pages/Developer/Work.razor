@@ -1,0 +1,24 @@
+﻿@page "/developer/work/{developerId:int}"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+
+<FormWork ButtonText="Update" dev="dev"
+          OnValidSubmit="@WorkDeveloper" />
+
+@code {
+    [Parameter] public int developerId { get; set; }
+    Developer dev = new Developer();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        dev = await http.GetFromJsonAsync<Developer>($"api/developer/{developerId}");
+    }
+
+    async Task WorkDeveloper()
+    {
+        await http.PutAsJsonAsync("api/developer", dev);
+        await js.InvokeVoidAsync("alert", $"Updated Successfully!");
+        uriHelper.NavigateTo("developer");
+    }
+}
