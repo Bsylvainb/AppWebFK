@@ -72,7 +72,7 @@
     async Task CreateActionList()
     {        
       // await http.PostAsJsonAsync($"api/developer/edit/{developerId}/developeractions", act);
-       await http.PostAsJsonAsync($"api/developer", act);      
+       await http.PostAsJsonAsync($"api/developeractions", act);      
      uriHelper.NavigateTo($"/developer/edit/{developerId}");
     }
 
