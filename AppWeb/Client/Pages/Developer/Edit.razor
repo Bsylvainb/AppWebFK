@@ -17,6 +17,20 @@
 <Codeblock Code="@codeblock1" />
 <hr />
 
+
+
+
+@if (actionitems == null)
+{
+    <text>Loading...</text>
+}
+else if (actionitems.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+
  <RadzenDataGrid @ref="gridaction"  AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
                 Data="@actionitems" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
                 SelectionMode="DataGridSelectionMode.Single" >
@@ -33,7 +47,7 @@
                    </RadzenDataGridColumn>
                </Columns>
  </RadzenDataGrid>    
-
+ }
 @code {
    // [Parameter] public ActionItem? act { get; set; }
     [Parameter] public int developerId { get; set; }
@@ -52,7 +66,7 @@
     protected async override Task OnParametersSetAsync()
     {
         dev = await http.GetFromJsonAsync<Developer>($"api/developer/{developerId}");
-        actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
+    //    actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
     }
 
     async Task EditDeveloper()
@@ -69,10 +83,11 @@
 
   //  }      
 
+
     async Task CreateActionList()
     {        
-    // await http.PostAsJsonAsync($"api/developer/edit/{developerId}/developeractions", act);
-     await http.PostAsJsonAsync($"api/developeractions", act);      
+     act.DeveloperId =  developerId;    
+     await http.PutAsJsonAsync($"api/developeractions", act);      
      uriHelper.NavigateTo($"/developer/edit/{developerId}");
     }
 
