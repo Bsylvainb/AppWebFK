@@ -126,6 +126,7 @@ namespace AppWeb.Shared.Models
         public DateTime? DateFinMI { get; set; } 
         public DateTime? DateFinSQ { get; set; }    
      
+        
         public List<ActionItem>? ActionItems { get; set; }
     }
 
@@ -139,8 +140,7 @@ namespace AppWeb.Shared.Models
         public DateTime? OpenDate { get; set; }       
         public DateTime? PlanDate { get; set; }       
         public DateTime? CloseDate { get; set; }
-        
-        public int DeveloperId { get; set; }
+                
         public Developer? Developer { get; set; }
     } 
 }
