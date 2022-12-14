@@ -351,12 +351,12 @@ else
         </Columns>
         
     </RadzenDataGrid>
-   @*<input @bind="newItemName" placeholder="New Todo Item" />
-    <button @onclick="AddYear">Add</button>*@
+   
+  
+
 }
 
 @code {
-
 
     RadzenDataGrid<Developer>? grid;
 
@@ -378,7 +378,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         developers = await client.GetFromJsonAsync<Developer[]>("api/developer");
-
+         
     }
 
     async Task Delete(int devId)

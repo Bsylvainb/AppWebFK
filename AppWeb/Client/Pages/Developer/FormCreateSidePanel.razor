@@ -22,11 +22,7 @@
         <div class="mb-3">
             <label class="form-label">Description</label>
             <RadzenTextBox @bind-Value="@act.DescriptionA" />
-        </div>
-        @*<div class="form-check mb-3">
-            <InputCheckbox class="form-check-input" id="@nameof(act.IsValidatedDesign)" @bind-Value="@act.IsValidatedDesign" />
-            <label class="form-check-label" for="@nameof(act.IsValidatedDesign)">Engineering Approval</label>
-        </div>*@
+        </div>      
 
         <div class="mb-3">
             <label class="form-label">Production Date</label>
@@ -34,8 +30,7 @@
             <RadzenDatePicker @bind-Value="@act.CloseDate" TValue="DateTime?" DateRender=@DateRender DateFormat="d" Class="w-100" />
         </div>              
 
-        <div class="d-grid gap-2">
-            @*<button class="btn btn-outline-primary" type="submit">Create</button>*@
+        <div class="d-grid gap-2">         
             <button type="submit" class="btn btn-success">@ButtonAction</button>
             <button class="btn btn-outline-secondary" type="reset">Reset</button>
             <button class="btn btn-outline-danger" type="button" @onclick="Sidepanel.SoftClose">Cancel</button>
