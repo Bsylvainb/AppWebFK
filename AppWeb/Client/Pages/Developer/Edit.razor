@@ -17,9 +17,6 @@
 <Codeblock Code="@codeblock1" />
 <hr />
 
-
-
-
 @if (actionitems == null)
 {
     <text>Loading...</text>
@@ -32,7 +29,7 @@ else
 {
 
  <RadzenDataGrid @ref="gridaction"  AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@actionitems" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+                Data="@act" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
                 SelectionMode="DataGridSelectionMode.Single" >
 
                <Columns>
@@ -49,7 +46,7 @@ else
  </RadzenDataGrid>    
  }
 @code {
-   // [Parameter] public ActionItem? act { get; set; }
+  
     [Parameter] public int developerId { get; set; }
     [Parameter] public int ActionId { get; set; } 
 
@@ -87,7 +84,7 @@ else
     async Task CreateActionList()
     {        
      act.DeveloperId =  developerId;    
-     await http.PutAsJsonAsync($"api/developeractions", act);      
+     await http.PutAsJsonAsync($"api/developeractions", actionitems);      
      uriHelper.NavigateTo($"/developer/edit/{developerId}");
     }
 
