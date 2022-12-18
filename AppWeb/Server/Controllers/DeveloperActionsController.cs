@@ -15,43 +15,79 @@ namespace AppWeb.Server.Controllers
         {
             this._contexts= contexts;
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetDeveloperActions()
+        {
+            var devs = await _contexts.ActionItems.ToListAsync();
+            return Ok(devs);
+        }
 
         // GET: api/<DeveloperActionController>
-           [HttpGet]
-          public IEnumerable<Developer> GetDevelopersWithActions()
-          {
-              return _contexts.Developers.Include(a => a.ActionItems).ToList();
-         }
+        //    [HttpGet]
+        //     public IEnumerable<Developer> GetDevelopersWithActions()
+        //  {
+        //      return _contexts.Developers.Include(a => a.ActionItems).ToList();
+        // }
 
         // GET api/<DeveloperActionController>/5
-         [HttpGet("{id}")]
-        public async Task<ActionResult<Developer>> GetDeveloperActions(int id)
-         {
-            Developer? developer = await _contexts.Developers
-                                  .Include(a => a.ActionItems)
-                                   .FirstOrDefaultAsync(d => d.DeveloperId == id);
-       
-             if (developer == null)
-            {
-               return NotFound();
-           }
+      //  [HttpGet("{id}")]
+      //  public async Task<ActionResult<Developer>> GetDeveloperActions(int id)
+        // {
+        //    Developer? developer = await _contexts.Developers
+        //                          .Include(a => a.ActionItems)
+        //                          .FirstOrDefaultAsync(d => d.DeveloperId == id);
+       //
+         //    if (developer == null)
+         //   {
+        //       return NotFound();
+        //   }
 
-            return Ok(developer);
-         }
+       //     return Ok(developer);
+       //  }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<ActionItem>> Post(int id, [FromBody] ActionItem poco)
+        {
+            Developer? developer = await _contexts.Developers
+                .Include(a => a.ActionItems)
+                .FirstOrDefaultAsync(d => d.DeveloperId == id);
+
+            if (developer == null)
+            {
+                return NotFound();
+            }
+
+            ActionItem ac = new ActionItem()
+            {
+                ActionId = 0,
+                DeveloperId = id,
+                CloseDate = poco.CloseDate,
+                DescriptionA = poco.DescriptionA,
+                OpenDate = poco.OpenDate,
+                PlanDate = poco.PlanDate,
+                State = poco.State,
+                Tilte = poco.Tilte
+            };
+
+            developer.ActionItems.Add(ac);
+            await _contexts.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetDeveloperActions), new { id = ac.ActionId }, poco);
+        }
+
 
         // POST api/<DeveloperActionController>
-          [HttpPost]
-           public async Task<ActionResult<Developer>> PostAsync([FromBody] Developer test)
-            {
-               _contexts.Developers.Add(test);
-             await _contexts.SaveChangesAsync();
-        
-              return CreatedAtAction(nameof(GetDeveloperActions), new { id = test.DeveloperId }, test);
-          }
+        //  [HttpPost]
+        //  public async Task<ActionResult<Developer>> PostAsync([FromBody] Developer test)
+        //   {
+        //     _contexts.Developers.Add(test);
+        //    await _contexts.SaveChangesAsync();
+
+        //     return CreatedAtAction(nameof(GetDeveloperActions), new { id = test.DeveloperId }, test);
+        // }
 
         // PUT api/<DeveloperActionController>/5
-           [HttpPut("{id}")]
+        [HttpPut("{id}")]
           public async Task<ActionResult<Developer>> Put(int id, [FromBody] ActionItem actionItem)
            {
              Developer? developer = await _contexts.Developers
