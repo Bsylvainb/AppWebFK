@@ -17,11 +17,11 @@
 <Codeblock Code="@codeblock1" />
 <hr />
 
-@if (actionitems == null)
+  @if (action == null)
 {
     <text>Loading...</text>
 }
-else if (actionitems.Length == 0)
+else if (action.Length == 0)
 {
     <text>No Records Found.</text>
 }
@@ -29,7 +29,7 @@ else
 {
 
  <RadzenDataGrid @ref="gridaction"  AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single"
-                Data="@act" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
+                Data="@action" TItem="ActionItem" CellRender="@CellRender" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single"
                 SelectionMode="DataGridSelectionMode.Single" >
 
                <Columns>
@@ -45,16 +45,16 @@ else
                </Columns>
  </RadzenDataGrid>    
  }
+
 @code {
   
     [Parameter] public int developerId { get; set; }
     [Parameter] public int ActionId { get; set; } 
 
-    ActionItem[]? actionitems { get; set; }
-
-    //ActionItem action = new ActionItem();
-
     Developer dev = new Developer();
+
+    ActionItem[]? action { get; set; }
+    
     ActionItem act = new ActionItem();
 
     RadzenDataGrid<ActionItem>? gridaction;
@@ -63,7 +63,7 @@ else
     protected async override Task OnParametersSetAsync()
     {
         dev = await http.GetFromJsonAsync<Developer>($"api/developer/{developerId}");
-    //    actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
+      
     }
 
     async Task EditDeveloper()
@@ -74,17 +74,15 @@ else
         uriHelper.NavigateTo("developer");        
     }  
 
-   //   protected override async Task OnInitializedAsync()
-  //  {
-  //      actionitems = await http.GetFromJsonAsync<ActionItem[]>("api/developeractions");
-
-  //  }      
-
+     protected override async Task OnInitializedAsync()
+    {
+       action = await http.GetFromJsonAsync<ActionItem[]>($"api/developeractions/{developerId}");
+    }      
 
     async Task CreateActionList()
     {        
      act.DeveloperId =  developerId;    
-     await http.PutAsJsonAsync($"api/developeractions", actionitems);      
+     await http.PutAsJsonAsync($"api/developeractions", act);      
      uriHelper.NavigateTo($"/developer/edit/{developerId}");
     }
 
